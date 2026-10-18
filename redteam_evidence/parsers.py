@@ -18,9 +18,25 @@ from pathlib import Path
 from .model import Run, TestResult
 
 GARAK_THRESHOLD = 0.5
+# Summary-only garak reports are expanded into one result per counted attempt. Cap the count
+# so a crafted "total" can't exhaust memory; real runs are orders of magnitude smaller.
+MAX_EVAL_ATTEMPTS = 1_000_000
+
+
+class ResultFileError(ValueError):
+    """A file in a supported format whose structure or values aren't what the format requires."""
 
 
 def load(path: Path) -> Run | None:
+    """Parse one file. Returns None for files that are neither format. Raises ValueError
+    (including ResultFileError) for malformed input, never anything else."""
+    try:
+        return _load(path)
+    except (AttributeError, KeyError, TypeError, RecursionError) as e:
+        raise ResultFileError(f'unexpected structure ({type(e).__name__}: {e})') from e
+
+
+def _load(path: Path) -> Run | None:
     raw = path.read_bytes()
     digest = hashlib.sha256(raw).hexdigest()
     text = raw.decode('utf-8-sig')
@@ -43,7 +59,7 @@ def discover(paths: list[Path]) -> list[Run]:
         for f in files:
             try:
                 run = load(f)
-            except (ValueError, KeyError, TypeError, AttributeError) as e:
+            except ValueError as e:
                 print(f'warning: skipped {f}: {type(e).__name__}: {e}', file=sys.stderr)
                 continue
             if run:
@@ -91,6 +107,8 @@ def parse_garak(path: Path, digest: str, entries: list[dict]) -> Run:
             if e.get('entry_type') != 'eval':
                 continue
             total, passed = int(e.get('total', 0)), int(e.get('passed', 0))
+            if not 0 <= passed <= total <= MAX_EVAL_ATTEMPTS:
+                raise ResultFileError(f'implausible eval counts for {e.get("probe")}: passed={passed}, total={total}')
             for i in range(total):
                 run.results.append(TestResult(tool='garak', test_id=e.get('probe', 'unknown'),
                                               passed=i < passed, detector=e.get('detector'),

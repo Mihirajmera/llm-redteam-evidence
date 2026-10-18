@@ -60,3 +60,26 @@ def test_discover_ignores_unrelated_and_broken_files(tmp_path, capsys):
     runs = discover([tmp_path, EXAMPLES / 'v1'])
     assert sorted(r.tool for r in runs) == ['garak', 'promptfoo']
     assert 'skipped' in capsys.readouterr().err
+
+
+def test_malformed_structures_raise_value_errors(tmp_path):
+    import pytest
+    from redteam_evidence.parsers import ResultFileError
+    cases = {
+        'list.json': '{"results": {"results": [[1, 2]]}}',                     # a result that is a list, not an object
+        'counts.report.jsonl': '{"entry_type": "eval", "probe": "p", "passed": {}, "total": 5}',
+    }
+    for name, text in cases.items():
+        p = tmp_path / name
+        p.write_text(text, encoding='utf-8')
+        with pytest.raises(ResultFileError):
+            load(p)
+
+
+def test_eval_counts_are_capped(tmp_path):
+    import pytest
+    from redteam_evidence.parsers import ResultFileError
+    p = tmp_path / 'huge.report.jsonl'
+    p.write_text('{"entry_type": "eval", "probe": "p", "passed": 0, "total": 1000000000000}', encoding='utf-8')
+    with pytest.raises(ResultFileError, match='implausible'):
+        load(p)                      # must fail fast, not try to build a trillion results
