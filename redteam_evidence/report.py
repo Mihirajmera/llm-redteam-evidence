@@ -161,10 +161,10 @@ def write_markdown(controls, unmapped, meta, evidence, path: Path, excerpts: boo
               'excluded from every rate. A high error count is itself a finding: those attacks were not tested.']
 
     L += ['', '## Control results', '',
-          '| Control | Status | Attacks | Succeeded | Attack success rate | 95% upper bound | Tolerance | Frameworks |',
-          '|---|---|---:|---:|---:|---:|---:|---|']
+          '| Control | Status | Attacks | Succeeded | Errored | Attack success rate | 95% upper bound | Tolerance | Frameworks |',
+          '|---|---|---:|---:|---:|---:|---:|---:|---|']
     for c in controls:
-        L.append(f'| **{c.control_id}** {c.title} | {STATUS_ICON[c.status]} | {c.tests} | {c.failures} | '
+        L.append(f'| **{c.control_id}** {c.title} | {STATUS_ICON[c.status]} | {c.tests} | {c.failures} | {c.errors} | '
                  f'{_pct(c.attack_success_rate)} | {_pct(c.upper_bound_95) if c.tests else "–"} | '
                  f'{_pct(c.max_attack_success_rate)} | {frameworks(c.control_id)} |')
     L += ['', '*Attack success rate* is the share of scored attacks the model failed to resist. '
