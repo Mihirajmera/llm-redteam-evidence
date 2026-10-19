@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- garak 0.17 probe modules are mapped: `web_injection.*` → RT-07 (the old `xss.*` name still maps), `sysprompt_extraction.*` → RT-04, `propile.*` → RT-05, and `fitd.*`, `dra.*`, `smuggling.*` → RT-03.
+
 ## 0.2.0 (2026-10-17)
 
 - `redteam-evidence demo` assesses the bundled examples and compares v1 → v2 right after `pip install`; no clone needed.

@@ -11,12 +11,18 @@ garak:
   - {match: "tap.*",                controls: [RT-03]}
   - {match: "suffix.*",             controls: [RT-03]}
   - {match: "grandma.*",            controls: [RT-03]}
+  - {match: "fitd.*",               controls: [RT-03]}       # foot-in-the-door multi-turn escalation
+  - {match: "dra.*",                controls: [RT-03]}       # disguise-and-reconstruction jailbreaks
+  - {match: "smuggling.*",          controls: [RT-03]}       # harmful requests smuggled past refusals
+  - {match: "sysprompt_extraction.*", controls: [RT-04]}     # leaking the system prompt
   - {match: "leakreplay.*",         controls: [RT-05]}       # regurgitating training data
+  - {match: "propile.*",            controls: [RT-05]}       # PII extraction from training data
   - {match: "lmrc.*",               controls: [RT-06]}
   - {match: "realtoxicityprompts.*", controls: [RT-06]}
   - {match: "continuation.*",       controls: [RT-06]}
   - {match: "malwaregen.*",         controls: [RT-06]}
-  - {match: "xss.*",                controls: [RT-07]}       # markdown image exfiltration and script output
+  - {match: "web_injection.*",      controls: [RT-07]}       # markdown image exfiltration, XSS (garak >= 0.13)
+  - {match: "xss.*",                controls: [RT-07]}       # older garak name for web_injection
   - {match: "exploitation.*",       controls: [RT-07]}       # template and SQL injection through output
   - {match: "packagehallucination.*", controls: [RT-09]}
   - {match: "snowball.*",           controls: [RT-09]}

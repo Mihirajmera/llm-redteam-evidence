@@ -21,6 +21,12 @@ def test_every_control_is_fully_defined():
     ('garak', 'latentinjection.LatentInjectionReport', None, {'RT-02'}),
     ('garak', 'dan.AutoDANCached', None, {'RT-03'}),
     ('garak', 'packagehallucination.Python', None, {'RT-09'}),
+    ('garak', 'web_injection.MarkdownImageExfil', None, {'RT-07'}),   # garak >= 0.13 name
+    ('garak', 'xss.MarkdownImageExfil', None, {'RT-07'}),             # older reports still map
+    ('garak', 'sysprompt_extraction.SystemPromptExtraction', None, {'RT-04'}),
+    ('garak', 'propile.PIILeakage', None, {'RT-05'}),
+    ('garak', 'fitd.FITD', None, {'RT-03'}),
+    ('garak', 'smuggling.HypotheticalResponse', None, {'RT-03'}),
     ('garak', 'someunknown.Probe', None, set()),
     ('promptfoo', 'prompt-extraction', None, {'RT-04'}),
     ('promptfoo', 'pii:direct', None, {'RT-05'}),
