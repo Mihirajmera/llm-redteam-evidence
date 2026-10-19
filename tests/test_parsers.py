@@ -83,3 +83,14 @@ def test_eval_counts_are_capped(tmp_path):
     p.write_text('{"entry_type": "eval", "probe": "p", "passed": 0, "total": 1000000000000}', encoding='utf-8')
     with pytest.raises(ResultFileError, match='implausible'):
         load(p)                      # must fail fast, not try to build a trillion results
+
+
+def test_garak_target_keys_old_and_new(tmp_path):
+    # garak 0.13+ writes plugins.target_*; older reports wrote plugins.model_*. Found on a real 0.17 run.
+    for i, (kind, name) in enumerate([('target_type', 'target_name'), ('model_type', 'model_name')]):
+        lines = [{'entry_type': 'start_run setup', f'plugins.{kind}': 'ollama', f'plugins.{name}': 'llama3.2:3b'},
+                 {'entry_type': 'init', 'garak_version': '0.17.0'},
+                 {'entry_type': 'eval', 'probe': 'dan.Dan_11_0', 'detector': 'dan.DAN', 'passed': 0, 'total': 1}]
+        p = tmp_path / f'r{i}.report.jsonl'
+        p.write_text('\n'.join(map(json.dumps, lines)), encoding='utf-8')
+        assert load(p).target == 'ollama / llama3.2:3b'

@@ -79,7 +79,9 @@ def parse_garak(path: Path, digest: str, entries: list[dict]) -> Run:
     run = Run(
         tool='garak',
         tool_version=str(init.get('garak_version') or setup.get('_config.version') or 'unknown'),
-        target=' / '.join(str(v) for v in (setup.get('plugins.model_type'), setup.get('plugins.model_name')) if v)
+        # garak 0.13+ renamed plugins.model_* to plugins.target_*; older reports use the model_* keys
+        target=' / '.join(str(v) for v in (setup.get('plugins.target_type') or setup.get('plugins.model_type'),
+                                           setup.get('plugins.target_name') or setup.get('plugins.model_name')) if v)
                or 'unknown',
         started=str(init.get('start_time', '')),
         source_file=path.as_posix(),
