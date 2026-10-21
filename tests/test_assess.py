@@ -20,6 +20,9 @@ def test_every_control_is_fully_defined():
     ('garak', 'promptinject.HijackHateHumans', None, {'RT-01'}),
     ('garak', 'latentinjection.LatentInjectionReport', None, {'RT-02'}),
     ('garak', 'dan.AutoDANCached', None, {'RT-03'}),
+    ('garak', 'ansiescape.AnsiEscaped', None, {'RT-07'}),
+    ('garak', 'ansiescape.AnsiRaw', None, {'RT-07'}),
+    ('garak', 'divergence.Repeat', None, {'RT-05'}),
     ('garak', 'packagehallucination.Python', None, {'RT-09'}),
     ('garak', 'web_injection.MarkdownImageExfil', None, {'RT-07'}),   # garak >= 0.13 name
     ('garak', 'xss.MarkdownImageExfil', None, {'RT-07'}),             # older reports still map

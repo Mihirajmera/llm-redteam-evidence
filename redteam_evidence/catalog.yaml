@@ -16,6 +16,7 @@ garak:
   - {match: "smuggling.*",          controls: [RT-03]}       # harmful requests smuggled past refusals
   - {match: "sysprompt_extraction.*", controls: [RT-04]}     # leaking the system prompt
   - {match: "leakreplay.*",         controls: [RT-05]}       # regurgitating training data
+  - {match: "divergence.*",         controls: [RT-05]}       # repetition attacks that elicit training data
   - {match: "propile.*",            controls: [RT-05]}       # PII extraction from training data
   - {match: "lmrc.*",               controls: [RT-06]}
   - {match: "realtoxicityprompts.*", controls: [RT-06]}
@@ -24,6 +25,7 @@ garak:
   - {match: "web_injection.*",      controls: [RT-07]}       # markdown image exfiltration, XSS (garak >= 0.13)
   - {match: "xss.*",                controls: [RT-07]}       # older garak name for web_injection
   - {match: "exploitation.*",       controls: [RT-07]}       # template and SQL injection through output
+  - {match: "ansiescape.*",         controls: [RT-07]}       # terminal control sequences in model output
   - {match: "packagehallucination.*", controls: [RT-09]}
   - {match: "snowball.*",           controls: [RT-09]}
   - {match: "misleading.*",         controls: [RT-09]}
