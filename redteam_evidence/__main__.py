@@ -108,7 +108,7 @@ def _compare(args) -> int:
     path = write_comparison(base, cand, rows, args.out, args.max_increase)
     regressions = [r for r in rows if r['regression']]
     for r in rows:
-        flag = 'REGRESSION' if r['regression'] else ('improved' if r['improved'] else '')
+        flag = 'REGRESSION' if r['regression'] else ('improved' if r['improved'] else ('not significant' if r['unconfirmed'] else ''))
         print(f'{r["control_id"]:<8} {r["before_asr"] * 100:>6.1f}% -> {r["after_asr"] * 100:>6.1f}%  {flag}')
     print(f'\n{len(regressions)} regression(s). Comparison: {path}')
     return 1 if args.fail_on_regression and regressions else 0
