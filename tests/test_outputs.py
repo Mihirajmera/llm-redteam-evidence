@@ -5,7 +5,8 @@ import pytest
 from conftest import EXAMPLES
 from redteam_evidence.__main__ import main
 from redteam_evidence.compare import compare, load_summary
-from redteam_evidence.report import sha256
+from redteam_evidence.assess import assess
+from redteam_evidence.report import sha256, write_all
 
 HASHED = ('control_id', 'system', 'version', 'sources', 'result', 'failing_attempts')
 
@@ -97,3 +98,20 @@ def test_output_is_reproducible(tmp_path, monkeypatch):
     assert len(files) > 20
     for f in files:
         assert (tmp_path / 'a' / f).read_bytes() == (tmp_path / 'b' / f).read_bytes(), f
+
+
+@pytest.mark.parametrize('scored,failures,errors', [(20, 1, 5), (0, 0, 3), (20, 0, 0)])
+def test_report_shows_errors_per_control(tmp_path, run_factory, attack_factory, scored, failures, errors):
+    runs = [run_factory(attack_factory('hijacking', scored, failures=failures, errored=errors))]
+    controls, unmapped = assess(runs)
+    paths = write_all(runs, controls, unmapped, tmp_path, system='Acme', version='test')
+    report = paths['report'].read_text(encoding='utf-8')
+    table = report.split('## Control results\n', 1)[1].strip().split('\n\n', 1)[0]
+    lines = table.splitlines()
+    assert lines[0].split(' | ')[1:6] == ['Status', 'Attacks', 'Succeeded', 'Errored', 'Attack success rate']
+    assert len(lines[0].split('|')) == len(lines[1].split('|'))
+    for control in controls:
+        row = next(line for line in lines[2:] if line.startswith(f'| **{control.control_id}**'))
+        cells = row.split(' | ')
+        assert cells[2:5] == [str(control.tests), str(control.failures), str(control.errors)]
+        assert cells[5] == f'{control.attack_success_rate * 100:.1f}%'
