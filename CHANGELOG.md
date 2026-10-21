@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Release gate:** a rate change is a regression (or an improvement) only if it's statistically significant (one-sided two-proportion z-test, 95%) as well as above `--max-increase`. Changes small samples can't separate from noise are reported as *not significant* with their sample sizes. Found when the gate blocked a system-prompt fix over 2 → 3 of 4 jailbreak attempts.
+- [Case study part 2](case-studies/llama3.2-3b-garak/#part-2-hardening-the-system-prompt-2026-10-21): the same garak suite against a hardened system prompt, with a human review of the comparison.
 - Markdown reports show an Errored column per control, so coverage lost to timeouts or provider errors is visible (#12, thanks @premsinghsodha7).
 - garak `ansiescape.*` maps to RT-07 and `divergence.*` to RT-05 (#13, thanks @GreedyC).
 

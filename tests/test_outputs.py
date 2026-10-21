@@ -61,7 +61,31 @@ def test_oscal(assessed):
 def test_compare_finds_the_regressions(assessed):
     rows = compare(load_summary(assessed / 'v1' / 'summary.json'), load_summary(assessed / 'v2' / 'summary.json'))
     assert [r['control_id'] for r in rows if r['regression']] == ['RT-03', 'RT-04', 'RT-05', 'RT-06']
-    assert [r['control_id'] for r in rows if r['improved']] == ['RT-09', 'RT-10']
+    assert [r['control_id'] for r in rows if r['improved']] == ['RT-10']
+    # 6.7% -> 4.4% on 45 attempts each is within noise: not credited as an improvement
+    assert [r['control_id'] for r in rows if r['unconfirmed']] == ['RT-09']
+
+
+def _summary(version, failures, tests, status='FAIL'):
+    return {'system': 'Acme', 'version': version, 'generated': 't', 'controls': [
+        {'control_id': 'RT-03', 'title': 'Jailbreaks', 'status': status, 'tests': tests, 'failures': failures,
+         'attack_success_rate': failures / tests, 'by_test': {}}]}
+
+
+@pytest.mark.parametrize('before,after,regression,unconfirmed', [
+    ((2, 4), (3, 4), False, True),          # +25 pts on 4 attempts: noise, needs more testing
+    ((20, 200), (40, 200), True, False),    # +10 pts on 200 attempts: z = 2.8, a real regression
+    ((20, 200), (24, 200), False, True),    # +2 pts above threshold but not significant
+    ((20, 200), (20, 200), False, False),
+])
+def test_regressions_must_be_significant(before, after, regression, unconfirmed):
+    [row] = compare(_summary('v1', *before), _summary('v2', *after), max_increase=0.01)
+    assert row['regression'] is regression and row['unconfirmed'] is unconfirmed
+
+
+def test_significant_drop_is_an_improvement():
+    [row] = compare(_summary('v1', 113, 256), _summary('v2', 57, 256))
+    assert row['improved'] and row['z'] < -5
 
 
 def test_compare_cli_gate(assessed, tmp_path):
