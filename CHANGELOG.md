@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Markdown reports show an Errored column per control, so coverage lost to timeouts or provider errors is visible (#12, thanks @premsinghsodha7).
+- garak `ansiescape.*` maps to RT-07 and `divergence.*` to RT-05 (#13, thanks @GreedyC).
+
 ## 0.2.1 (2026-10-19)
 
 - [Case study](case-studies/llama3.2-3b-garak/): a real garak 0.17 run against Llama 3.2 3B, assessed with `--no-excerpts`, plus a human review of the jailbreak detector's calls.
