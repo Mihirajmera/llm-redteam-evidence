@@ -223,7 +223,7 @@ Run either tool against your model, then point `assess` at the output. For examp
 
 ```bash
 # garak writes a *.report.jsonl and prints its path at the end of the run
-python -m garak --model_type ollama --model_name llama3.2 --probes promptinject,dan,encoding,latentinjection,xss,packagehallucination
+python -m garak --target_type ollama --target_name llama3.2:3b --probes promptinject,dan,encoding,latentinjection,xss,packagehallucination
 
 # promptfoo: configure plugins with `redteam init`, generate the attacks, then save the results as JSON
 npx promptfoo@latest redteam generate
