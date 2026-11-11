@@ -12,6 +12,8 @@ Controls are mapped to the **OWASP Top 10 for LLM Applications 2025, MITRE ATLAS
 
 > **In one sentence:** security tools tell you an AI model *can* be attacked; this tells your risk committee whether that's *acceptable*, with evidence an auditor can verify.
 
+[![The sample report this tool produces, from sample-output/comparison.md](docs/report.png)](sample-output/comparison.md)
+
 ## Quick start (2 minutes)
 
 You need Python 3.11+. No API keys, no model and no network access: the demo uses bundled example results.
