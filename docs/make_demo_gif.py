@@ -1,6 +1,6 @@
-"""Render docs/demo.gif from a real captured run: the command is typed, then the output scrolls in.
+"""Render docs/demo.gif from a real captured session: `$ ` lines are typed, output scrolls in.
 
-    redteam-evidence demo > docs/demo.txt
+docs/demo.txt holds each command as `$ command` followed by its captured output.
     python docs/make_demo_gif.py docs/demo.txt docs/demo.gif
 """
 import re, sys, textwrap
@@ -48,14 +48,16 @@ def draw(lines, cursor, f):
     return im
 
 
-def main(src, out, cmd='redteam-evidence demo'):
-    body = open(src, encoding='utf-8').read().rstrip('\n').split('\n')
-    f, frames, durs = font(), [], []
-    for i in range(len(cmd) + 1):  # type the command
-        frames.append(draw([f'$ {cmd[:i]}'], True, f)); durs.append(55 if i else 600)
-    lines = [f'$ {cmd}']
-    for t in body:  # output scrolls in a line at a time
-        for part in textwrap.wrap(t, COLS, drop_whitespace=False) or ['']:
+def main(src, out):
+    f, frames, durs, lines = font(), [], [], []
+    for t in open(src, encoding='utf-8').read().rstrip('\n').split('\n'):
+        if t.startswith('$ '):  # type the command
+            lines += [''] * bool(lines) + ['$ ']  # blank line between commands
+            for i in range(len(t) - 1):
+                lines[-1] = t[:i + 2]
+                frames.append(draw(lines, True, f)); durs.append(55 if i else 700)
+            continue
+        for part in textwrap.wrap(t, COLS, drop_whitespace=False) or ['']:  # output scrolls in
             lines.append(part)
             frames.append(draw(lines, False, f)); durs.append(90 if part.strip() else 40)
     durs[-1] = 6000

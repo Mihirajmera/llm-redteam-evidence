@@ -1,3 +1,4 @@
+$ redteam-evidence demo
 Assessing the bundled synthetic examples in redteam_evidence/examples
 
 === Acme Support Assistant v1
