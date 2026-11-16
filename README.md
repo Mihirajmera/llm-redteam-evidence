@@ -12,6 +12,8 @@ Controls are mapped to the **OWASP Top 10 for LLM Applications 2025, MITRE ATLAS
 
 > **In one sentence:** security tools tell you an AI model *can* be attacked; this tells your risk committee whether that's *acceptable*, with evidence an auditor can verify.
 
+![redteam-evidence demo: two versions of a chatbot assessed, v2 blocked with four regressions](docs/demo.gif)
+
 [![The sample report this tool produces, from sample-output/comparison.md](docs/report.png)](sample-output/comparison.md)
 
 ## Quick start (2 minutes)
